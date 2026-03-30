@@ -3,38 +3,52 @@ import java.util.Objects;
 import java.util.Random;
 public class Csiga {
 
+    //adattagok
     private final Random RND = new Random();
-
     private final String CSIGA = "🐌";
+    private final int SEBESSEGFELSOHATAR;
+    private boolean gyorsito = false;
+    private String rajzoltTav = "";
     private Szinek szin;
-    private boolean gyorsito;
     private int sebesseg;
     private int tav;
-    private String megtettUt = "";
 
+    //konstruktor
     public Csiga() {
-        this(Szinek.RESET, false);
+        this(Szinek.RESET);
     }
 
     public Csiga(Szinek szin) {
+        this(szin, 4);
+    }
+    
+    public Csiga(Szinek szin, int SEBESSEGFELSOHATAR) {
         this.szin = szin;
-        this.gyorsito = false;
+        this.SEBESSEGFELSOHATAR = SEBESSEGFELSOHATAR;
     }
 
-    public Csiga(Szinek szin, boolean gyorsito) {
-        this.szin = szin;
-        this.gyorsito = gyorsito;
-    }
-
+    //saját függvény
     public void megy() {
-        sebesseg = RND.nextInt(0, 4);
+        sebesseg = RND.nextInt(0, SEBESSEGFELSOHATAR);
         if (gyorsito) {
             sebesseg = (sebesseg == 0) ? 1 : sebesseg * 2;
         }
         tav += sebesseg;
     }
+    
+    public String csikotHuz(boolean adattal) {
+        rajzoltTav += karakterKiir();
+        String rajz = "";
+        if (adattal){
+            rajz += "  "+getSzinkod() + rajzoltTav + getCsiga() + Szinek.RESET.getAnsiSzinkod() + " (" + getTav() + ")";
+        }else {
+            rajz += "  "+getSzinkod() + rajzoltTav + getCsiga() + Szinek.RESET.getAnsiSzinkod();
+        }
+        return rajz;
+    }
 
-    public String karakterKiir(){
+    //saját segédvüggvény
+    private String karakterKiir(){
         String karakterek = "";
         for (int i = 0; i < sebesseg; i++) {
             karakterek += getStilusKaraktere();
@@ -42,18 +56,15 @@ public class Csiga {
         return karakterek;
     }
     
-    public char getStilusKaraktere() {
+    private char getStilusKaraktere() {
         return gyorsito ? '=' : '-';
     }
 
-    public boolean isGyorsito() {
-        return gyorsito;
-    }
-    
     public void setGyorsito(boolean megkap) {
         this.gyorsito = megkap;
     }
     
+    //getterek
     public Szinek getSzin() {
         return szin;
     }
@@ -69,23 +80,15 @@ public class Csiga {
     public int getTav() {
         return tav;
     }
-    
-    public int getSebesseg() {
-        return sebesseg;
-    }
-    
-    public String getMegtettUt() {
-        return megtettUt;
+
+    public String getRajzoltTav() {
+        return rajzoltTav;
     }
 
-    public void setMegtettUt(String szoveg){
-        megtettUt += szoveg;
-    }
-    
+    //equals + hash
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.CSIGA);
+        int hash = 7;
         hash = 53 * hash + Objects.hashCode(this.szin);
         return hash;
     }
@@ -102,10 +105,6 @@ public class Csiga {
             return false;
         }
         final Csiga other = (Csiga) obj;
-        if (!Objects.equals(this.CSIGA, other.CSIGA)) {
-            return false;
-        }
         return this.szin == other.szin;
     }
-
 }
